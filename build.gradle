@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'jacoco'
 }
 
 repositories {
@@ -21,8 +22,22 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+jacoco {
+    toolVersion // Версия плагина JaCoCo
+}
+
+tasks.jacocoTestReport {
+    dependsOn test // Отчёт создаётся после выполнения тестов
+
+    reports {
+        xml.required = true // Генерация XML-отчёта для CI/CD
+        html.required = true // Генерация HTML-отчёта для локального просмотра
+    }
+}
+
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 tasks.withType(Test) {
